@@ -464,7 +464,6 @@
 *://*.nextbdom.ru/*
 *://*.verifypow.com/*
 *://*.srcip.com/*
-*://*.youtube.com/*
 *://*.minerad.com/*
 *://*.coin-cube.com/*
 *://*.service4refresh.info/*
