@@ -1,7 +1,7 @@
 {
 	"name": "Cryptojacking Detection Extension",
     "version": "1.0",
-    "description": "Building the basic extension shell",
+    "description": "An extension to detect and prevent Cryptojacking attacks",
 	"permissions": ["storage", "tabs", "webRequest", "webRequestBlocking", "<all_urls>", "system.cpu"],
 	"background": {
       "scripts": ["js/background.js"],
