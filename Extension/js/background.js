@@ -1,3 +1,4 @@
+//background.js provides the extension functionality that runs in the background to monitor CPU usage and handle blacklist updates
 var oldInfo = false;
 var warningCount = 0;
 var blockedTabIds = [];
@@ -6,7 +7,7 @@ var blacklist = [];
 var cancelFunction= function (){return {cancel: true};};
 
 setInterval(function(){ 
-
+	//This function retrieves CPU data and transforms it into percentage values
 	chrome.system.cpu.getInfo(function(info) {
 		var totalUsage = 0;
 		var domain;
@@ -18,7 +19,6 @@ setInterval(function(){
 			domain = (new URL(tabs[0].url)).hostname;
 			domain = formatDomain(domain);
 			
-	
 		for (var number = 0; number < info.numOfProcessors; number++) {
 			var usage = info.processors[number].usage;
 
@@ -36,7 +36,7 @@ setInterval(function(){
 		}
 		oldInfo = info;
 		var percent = Math.round(totalUsage / info.numOfProcessors);
-
+		//This code displays the warning notification if CPU usage is consistently high
 		if ((percent >= 25)&& (blacklist.includes(domain) ==false)) {
 			warningCount++;
 			
@@ -60,10 +60,10 @@ setInterval(function(){
 	
 	});	
 }, 1000);
+//listen for messages from popup.js after blacklist button click
 chrome.runtime.onMessage.addListener(function(domain, sender, sendResponse) {
-	
+	//add current domain to the blacklist
 	domainMod = formatDomain(domain);
-	console.log(domainMod +" Retrieved from popup");
 	if (blacklist.includes(domainMod)){
 		var index = blacklist.indexOf(domainMod);
 			if (index > -1){
@@ -72,7 +72,7 @@ chrome.runtime.onMessage.addListener(function(domain, sender, sendResponse) {
 	}
 	else{
 		blacklist.push(domainMod);
-		console.log(domain +" Added to blacklist");
+		
 	}
 	chrome.webRequest.onBeforeRequest.removeListener(cancelFunction);
 	blockScripts();
@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener(function(domain, sender, sendResponse) {
 	checkBlacklist(domain);
     return true; 
 });
-
+//on extension installation, populate blacklist from blacklist.txt
 chrome.runtime.onInstalled.addListener(function () {
 	var blacklistURL = chrome.runtime.getURL("txt/blacklist.txt");
 	const request = new XMLHttpRequest();
@@ -94,7 +94,7 @@ chrome.runtime.onInstalled.addListener(function () {
 	request.open("GET", blacklistURL);
 	request.send();
 });
-
+//block scripts on urls included in the blacklist array
 function blockScripts() {
 	chrome.webRequest.onBeforeRequest.addListener(cancelFunction, {
 		urls: blacklist, types: ["script"]
@@ -102,7 +102,7 @@ function blockScripts() {
 	);
 }
 
-
+//check blacklist for current url on current tab update
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	
 	if ("url" in changeInfo) {
@@ -115,7 +115,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 	checkBlacklist(domain);
 });
 
-
+//check blacklist for current domain and set notification if scripts on the domain are blocked
 function checkBlacklist(domain) {
 	var domainMod = formatDomain(domain);
 	if (blacklist.indexOf(domainMod) >= 0) {
@@ -130,14 +130,14 @@ function checkBlacklist(domain) {
 	}
 } 
 
-
+//checks blacklist for current url on tab switch
 chrome.tabs.onActivated.addListener(function (activeInfo) {
 	
 	if (tabUrls[activeInfo.tabId]){
 		checkBlacklist(tabUrls[activeInfo.tabId]);
 	}
 });
-
+//formats domain to match script blocking accepted format
 function formatDomain (domain){
 	var domainMod;
 	if (domain.includes("www.")) {
