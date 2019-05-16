@@ -1,0 +1,47 @@
+html {
+	width: 350px;
+}
+body {
+	margin: 0px;
+	}
+#titleBar {  
+	height:5%;
+	overflow:auto;
+	vertical-align: middle;
+	background-color: rgb(220,220,220);
+}  
+#logo {
+	float: left;
+	margin: 2%;
+	
+}
+#titleText {
+	margin-top: 12px;
+	margin-bottom:0px;
+	margin-left:58px;
+	padding: 1%;
+}
+.content, .help{
+	text-align: center;
+}
+#statusText	{
+	font-size: large;
+	font-weight: bold;
+	margin-left: 10px;
+	margin-right: 10px;
+	
+}
+#btnBlacklistToggle {
+	display: inline-block;
+	font-size: medium;
+	font-weight: bold;
+	margin: 10px;
+	padding: 5px;
+}
+#btnHelp {
+	display: inline-block;
+	font-weight: bold;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	padding: 5px;
+}
